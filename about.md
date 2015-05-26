@@ -1,6 +1,7 @@
 ---
 layout: page
 title: About
+shorttitle: bholley::about
 permalink: /about/
 ---
 

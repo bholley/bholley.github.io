@@ -16,15 +16,13 @@ body {
 #topcontainer {
   font-family: 'Dosis', sans-serif;
   position: relative;
+}
+
+#topcontainer.firstvisit {
   animation-name: slidedown;
   animation-delay: 0.5s;
   animation-duration: 0.5s;
   animation-fill-mode: both;
-}
-
-@keyframes slidedown {
-  0% { top: -65px; }
-  100% { top: 0px; }
 }
 
 .overlay {
@@ -32,24 +30,60 @@ body {
 }
 
 #pagetitle {
-  float: left;
-  padding: 5px 20px 8px 20px;
-  border-radius: 0px 0px 5px 0px;
-
   font-weight: 800;
   font-size: 46px;
   cursor: default;
 }
 
 #linkbar {
-  float: right;
-  border-radius: 0px 0px 0px 5px;
   font-weight: 400;
   font-size: 20px;
   padding: 3px 20px 3px 20px;
-  vertical-align: top;
-  text-align: right;
-  height: 50%;
+}
+
+@media (max-width: 619px) {
+  @keyframes slidedown {
+    0% { top: -105px; }
+    100% { top: 0px; }
+  }
+
+  #topcontainer {
+    width: 320px;
+    margin: auto;
+  }
+
+  #pagetitle {
+    padding: 5px 20px 8px 20px;
+    text-align: center;
+  }
+
+  #linkbar {
+    border-radius: 0px 0px 5px 5px;
+    vertical-align: top;
+    height: 50%;
+    text-align: center;
+  }
+}
+
+@media (min-width: 620px) {
+  @keyframes slidedown {
+    0% { top: -72px; }
+    100% { top: 0px; }
+  }
+
+  #pagetitle {
+    float: left;
+    padding: 5px 20px 8px 20px;
+    border-radius: 0px 0px 5px 0px;
+  }
+
+  #linkbar {
+    float: right;
+    border-radius: 0px 0px 0px 5px;
+    vertical-align: top;
+    height: 50%;
+    text-align: right;
+  }
 }
 
 #linkbar a {
@@ -79,12 +113,19 @@ body {
   position: fixed;
   width: 100%;
   height: 75%;
+  max-height: calc(100% - 120px);
   bottom: 0px; /* Fallback if CSS animations aren't supported. */
+}
 
+#fixedcontent.firstvisit {
   animation-name: slideup;
-  animation-delay: 1s;
+  animation-delay: 0s;
   animation-duration: 1s;
   animation-fill-mode: both;
+}
+
+#topcontainer.firstvisit ~ #fixedcontent.firstvisit {
+  animation-delay: 1s;
 }
 
 @keyframes slideup {
@@ -109,7 +150,7 @@ body {
   border-radius: 5px 5px 0px 0px;
   margin-left: auto;
   margin-right: auto;
-  min-width: 400px;
+  min-width: 320px;
   width: 70%;
   height: 100%;
 
@@ -121,7 +162,7 @@ body {
   */
 }
 
-#textcontent {
+#contentpane-body {
   /*
    * Use this trick instead of height:100% so that the margin and padding are
    * bound inside of the containing div.
@@ -138,7 +179,75 @@ body {
    * Use padding for left and right so that the scroll bar is outside the margin.
    */
   margin-top: 20px;
-  margin-bottom: 20px;
+  margin-bottom: 0px;
   padding-left: 20px;
   padding-right: 20px;
+}
+
+/*
+ * contentpane-header is an optional mix-in that sits above contentpane-body.
+ */
+
+#contentpane-header {
+  height: 60px;
+}
+
+#contentpane-header ~ #contentpane-body {
+  /* Some pages have a contentpane-header, some don't. When we have the header,
+   * we want to adjust the absolute positioning of the body to sit below it.
+   * Keep this equal to the height for contentpane-header. */
+  top: 60px;
+}
+
+#contentpane-header-left {
+  float: left;
+  margin-top: 15px;
+  width: calc(100% - 160px);
+}
+
+#contentpane-header-left h1 {
+  padding-left: 20px;
+  margin-top: 0px;
+  margin-bottom: 0px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+@media (max-width: 800px) { #contentpane-header-left h1 { font-size: 30px; } }
+@media (max-width: 600px) { #contentpane-header-left h1 { font-size: 14pt; font-weight: normal; line-height: 26px; } }
+
+#contentpane-header-right {
+  float: right;
+  margin-top: 15px;
+}
+
+#contentpane-header-right > * {
+  padding-right: 20px;
+}
+
+#contentpane-header-right .fa {
+  /* Make the arrows line up with text. */
+  padding-top: 4px;
+}
+
+#contentpane-header-right a {
+  text-decoration: none;
+  outline: 0;
+  color: black;
+}
+
+#contentpane-header-right a:hover {
+  color: rgb(96,184,255);
+}
+
+/*
+ * AdblockPlus blocks social media icons. :-(
+ */
+.fa-linkedinnoadblock:before {
+  content:"\f08c";
+}
+
+.fa-twitternoadblock:before {
+  content:"\f099";
 }

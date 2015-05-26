@@ -1,0 +1,9 @@
+---
+layout: base
+shorttitle: bholley::blog
+permalink: /blog/latest/
+---
+
+{% assign page = site.posts.first %}
+{% assign content = page.content %}
+{% include postbody.html %}
