@@ -6,6 +6,14 @@ description: > # this means to ignore newlines until "baseurl:"
 baseurl: "" # the subpath of your site, e.g. /blog/
 url: "http://bholley.net" # the base hostname & protocol for your site
 
+# Jekyll 2.4 (used on github) doesn't support scoping templated permalink
+# properly. So we just make the default permalink apply to blog posts, and
+# give manual permalinks to everything else.
+#
+# See http://stackoverflow.com/questions/29061077/
+#     post-permalinks-not-being-parsed-in-jekyll-on-github-pages
+permalink: blog/:year/:title.html
+
 defaults:
   -
     scope:
@@ -13,7 +21,6 @@ defaults:
       type: "posts"
     values:
       layout: "post"
-      permalink: "blog/:categories/:year/:title.html"
 
 # Build settings
 markdown: kramdown
