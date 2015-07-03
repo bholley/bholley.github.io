@@ -9,6 +9,17 @@
 <link rel="stylesheet" href="{{ "/style.css" | prepend: site.baseurl }}">
 <link rel="canonical" href="{{ page.url | replace:'index.html','' | prepend: site.baseurl | prepend: site.url }}">
 <link rel="alternate" type="application/rss+xml" title="{{ site.title }}" href="{{ "/feed.xml" | prepend: site.baseurl | prepend: site.url }}" />
-<script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
-<script src="{{ "/main.js" | prepend: site.baseurl }}" ></script>
+<script>
+  // Do this the old-fashioned way to avoid depending on jquery.
+  document.addEventListener('DOMContentLoaded', function() {
+    var ref = document.referrer;
+    if (ref.startsWith(location.origin)) {
+      document.getElementById('topcontainer').removeClass('firstvisit');
+    }
+
+    if (ref.length > location.origin.length + 1) {
+      document.getElementById('fixedcontent').removeClass('firstvisit');
+    }
+  });
+</script>
 </head>
