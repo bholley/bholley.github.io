@@ -98,10 +98,13 @@ body {
   }
 }
 
-#linkbar a {
+#topcontainer a {
   outline: 0;
   color: black;
   text-decoration: none;
+}
+
+#linkbar a {
   padding-left: 20px;
 }
 
