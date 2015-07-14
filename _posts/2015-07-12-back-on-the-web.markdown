@@ -1,6 +1,8 @@
 ---
 title:  "Back on the Web"
 date:   2015-07-12
+tags:
+- mozilla
 ---
 
 I've had a lot of websites over the years. The first one went live when I was eleven years old, and was admittedly much more about style than substance. That one was on Angelfire, the next on Tripod, then a Xanga, then self-hosted MovableType and WordPress. You can probably find them all of them archived somewhere if you try, but I won't disturb their slumber by linking to them here.
