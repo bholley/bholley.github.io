@@ -144,7 +144,7 @@ body {
 }
 
 @keyframes slideup {
-  0% { bottom: -75%; }
+  0% { bottom: -100%; }
   100% { bottom: 0px; }
 }
 
