@@ -227,10 +227,31 @@ body {
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
+  cursor: default;
 }
 
 @media (max-width: 800px) { #contentpane-header-left h1 { font-size: 30px; } }
 @media (max-width: 600px) { #contentpane-header-left h1 { font-size: 14pt; font-weight: normal; line-height: 26px; } }
+
+.posttitle a {
+  font-size: 30px;
+  vertical-align: 10%;
+  visibility: hidden;
+  opacity: 0;
+  text-decoration: none;
+  outline: 0;
+  color: black;
+  margin-left: 14px;
+  -webkit-transition: visibility 0.5s, opacity 0.5s;
+  transition: visibility 0.5s, opacity 0.5s;
+}
+
+@media (min-width: 601px) {
+  .posttitle:hover a {
+    opacity: 1;
+    visibility: visible;
+  }
+}
 
 #contentpane-header-right {
   float: right;
