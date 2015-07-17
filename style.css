@@ -177,6 +177,8 @@ body {
   */
 }
 
+@media (max-width: 800px) { #contentpane { width: 90%; } }
+
 #contentpane-body {
   /*
    * Use this trick instead of height:100% so that the margin and padding are
