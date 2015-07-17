@@ -177,7 +177,7 @@ body {
   */
 }
 
-@media (max-width: 800px) { #contentpane { width: 90%; } }
+@media (max-width: 1000px) { #contentpane { width: 90%; } }
 
 #contentpane-body {
   /*
