@@ -176,6 +176,11 @@ body {
   margin-bottom: 0px;
 }
 
+/* Prevent overflow of images in the content. */
+#contentpane-body img {
+  max-width: 100%;
+}
+
 /*
  * contentpane-header is an optional mix-in that sits above contentpane-body.
  */
