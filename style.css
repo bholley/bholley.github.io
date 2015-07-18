@@ -1,7 +1,6 @@
 /* http://www.google.com/fonts#ReviewPlace:refine/Collection:Rambla|Dosis|Signika */
 
 html {
-  overflow: hidden;
   height: 100%;
 }
 
@@ -11,6 +10,7 @@ body {
   background-repeat: no-repeat;
   background-size: cover;
   background-position: left top;
+  background-attachment: fixed;
 }
 
 @media (max-width: 1000px) {
@@ -125,11 +125,11 @@ body {
 }
 
 #fixedcontent {
-  position: fixed;
+  position: absolute;
   width: 100%;
-  height: 100%;
-  max-height: calc(100% - 120px);
-  bottom: 0px; /* Fallback if CSS animations aren't supported. */
+  top: 150px; /* Fallback if CSS animations aren't supported. */
+  height: 1px; /* see http://bit.ly/1SsT7j7 */
+  min-height: calc(100% - 150px);
 }
 
 #fixedcontent.firstvisit {
@@ -144,17 +144,9 @@ body {
 }
 
 @keyframes slideup {
-  0% { bottom: -100%; }
-  100% { bottom: 0px; }
+  0% { top: 100%; }
+  100% { top: 150px; }
 }
-
-/*
-@keyframes applytransparency {
-  0% { background: rgba(240,240,240, 1.0); }
-  99% { background: rgba(240,240,240, 1.0); }
-  100% { background: rgba(240,240,240, 0.95); }
-}
-*/
 
 #contentpane {
   font-family: 'Alegreya', serif;
@@ -167,38 +159,21 @@ body {
   margin-right: auto;
   min-width: 320px;
   width: 70%;
-  height: 100%;
-
-  /*
-  animation-name: applytransparency;
-  animation-delay: 1s;
-  animation-duration: 1s;
-  animation-fill-mode: both;
-  */
+  min-height: 100%;
 }
 
 @media (max-width: 1000px) { #contentpane { width: 90%; } }
 
 #contentpane-body {
-  /*
-   * Use this trick instead of height:100% so that the margin and padding are
-   * bound inside of the containing div.
-   */
-  position: absolute;
-  top: 0px;
-  bottom: 0px;
-  left: 0px;
-  right: 0px;
-  overflow: auto;
+  padding: 20px 20px 20px 20px;
+}
 
-  /*
-   * Use margin for top and bottom so that the margins apply to the scroll area.
-   * Use padding for left and right so that the scroll bar is outside the margin.
-   */
-  margin-top: 20px;
+/* Deal with the effects of implicit <p> margins. */
+#contentpane-body p:first-child {
+  margin-top: 0px;
+}
+#contentpane-body p:last-child {
   margin-bottom: 0px;
-  padding-left: 20px;
-  padding-right: 20px;
 }
 
 /*
