@@ -184,13 +184,6 @@ body {
   height: 60px;
 }
 
-#contentpane-header ~ #contentpane-body {
-  /* Some pages have a contentpane-header, some don't. When we have the header,
-   * we want to adjust the absolute positioning of the body to sit below it.
-   * Keep this equal to the height for contentpane-header. */
-  top: 60px;
-}
-
 #contentpane-header-left {
   float: left;
   margin-top: 15px;
