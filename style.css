@@ -176,6 +176,13 @@ body {
   margin-bottom: 0px;
 }
 
+/* Center images in posts. */
+#contentpane-body p img {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
 /* Prevent overflow of images in the content. */
 #contentpane-body img {
   max-width: 100%;
