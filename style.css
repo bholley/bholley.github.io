@@ -199,10 +199,11 @@ body {
 #contentpane-header-left {
   float: left;
   margin-top: 15px;
-  width: calc(100% - 160px);
+  width: calc(100% - 200px);
 }
 
 #contentpane-header-left h1 {
+  font-size: 30px;
   padding-left: 20px;
   margin-top: 0px;
   margin-bottom: 0px;
@@ -212,7 +213,6 @@ body {
   cursor: default;
 }
 
-@media (max-width: 800px) { #contentpane-header-left h1 { font-size: 30px; } }
 @media (max-width: 600px) { #contentpane-header-left h1 { font-size: 14pt; font-weight: normal; line-height: 26px; } }
 
 .posttitle a {
