@@ -1,6 +1,9 @@
 <div id="fixedcontent" class="firstvisit">
   <div id="contentpane">
     <div id="contentpane-header">
+      <div id="contentpane-header-left" title="{{ page.title }}">
+        <h1 class="posttitle">{{ page.title }}<a href="{{ page.url }}" class="fa fa-link"></a></h1>
+      </div>
       <div id="contentpane-header-right">
         {% if page.next %}
         <a href="{{ page.next.url }}" class="fa fa-arrow-left"></a>
@@ -9,9 +12,6 @@
         {% if page.previous %}
         <a href="{{ page.previous.url }}" class="fa fa-arrow-right"></a>
         {% endif %}
-      </div>
-      <div id="contentpane-header-left" title="{{ page.title }}">
-        <h1 class="posttitle">{{ page.title }}<a href="{{ page.url }}" class="fa fa-link"></a></h1>
       </div>
     </div>
     <div id="contentpane-body">

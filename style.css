@@ -194,12 +194,17 @@ body {
 
 #contentpane-header {
   height: 60px;
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
 }
 
 #contentpane-header-left {
-  float: left;
   margin-top: 15px;
-  width: calc(100% - 200px);
+  min-width: 0;
+  -webkit-flex: 1;
+  -ms-flex: 1;
+  flex: 1;
 }
 
 #contentpane-header-left h1 {
@@ -236,7 +241,6 @@ body {
 }
 
 #contentpane-header-right {
-  float: right;
   margin-top: 15px;
 }
 
