@@ -19,7 +19,7 @@ The answer is complicated. Recent editions of the C++ standard library [include 
 
 MozPromises work great, and I already forget how we lived without them. A number of other organizations and researchers have been [barking up](https://code.facebook.com/posts/1661982097368498) the [same tree](http://stellar-group.org/2015/06/hpx-and-cpp-dataflow/) this year, which indicates that we'll likely see a lot more of this kind of thing very soon. The MozPromise API was a quick-and-dirty job, and I expect the industry will iterate on these patterns and eventually produce something more elegant and general. That being said, the core ideas of MozPromise have proven themselves to be exceedingly useful in enabling asynchronicity and parallelism, and I think they're worth sharing.
 
-###The Basics
+### The Basics
 
 A method whose result may be computed asynchronously returns a `MozPromise`. More specifically, it returns an `nsRefPtr<MozPromise<ResolveType, RejectType>>`, which is templated on the type of values that we want to propagate upon success or failure. Returning a smart pointer directly from a method is generally frowned upon, but we do it anyway. This enables us to compactly follow the MozPromise-returning method with a `Then()` call, similar to what we'd do in JavaScript:
 
