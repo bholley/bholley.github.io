@@ -1,0 +1,108 @@
+<script>
+var loc1;
+var loc2;
+var currentContext;
+
+function altLoad()
+{
+	if ( currentContext == "a" )
+	{
+		loc1 = document.getElementById("f").contentWindow.location;
+		print ( loc1, "div2" );
+	} else if ( currentContext == "b" )
+	{
+		loc2 = document.getElementById("f").contentWindow.location;
+		print ( loc2, "div3" );
+	}
+}
+
+function click1 ()
+{
+	currentContext = "a";
+	document.getElementById("f").src="a.htm";
+}
+function click2 ()
+{
+	currentContext = "b";
+	document.getElementById("f").src="b.htm";
+}
+
+
+// this test just wants to see if a new object is created for each document
+// if not, 'loc1' should theoretically equal 'loc2'
+function compareObjects()
+{
+	try
+	{
+		print ( "a: " + loc1 + "<br>b: " + loc2 + "<br>" + (loc1 === loc2), "div4" );
+	} catch ( e )
+	{
+		print ( e + ', ' + (loc1 === loc2), "div4" );
+	}
+}
+function compareValues()
+{
+	try
+	{
+		print ( "a: " + loc1.href + "<br>b: " + loc2.href + "<br>" + (loc1.href == loc2.href), "div5" );
+	} catch ( e )
+	{
+		print ( e, "div5" );
+	}
+
+}
+function printObjects()
+{
+	try
+	{
+		print ( "a: " + loc1 + "<br>b: " + loc2, "div6" );
+	} catch ( e )
+	{
+		print ( e, "div6" );
+	}
+}
+function printToString()
+{
+	try
+	{
+		print ( "a: " + loc1.toString() + "<br>b: " + loc2.toString(), "div7" );
+	} catch ( e )
+	{
+		print ( e, "div7" );
+	}
+}
+function printHref()
+{
+	try
+	{
+		print ( "a: " + loc1.href + "<br>b: " + loc2.href, "div8" );
+	} catch ( e )
+	{
+		print ( e, "div8" );
+	}
+}
+
+function print ( val, d )
+{
+	document.getElementById(d).innerHTML = val;
+}
+function printCurrent()
+{
+	var win = document.getElementById("f");
+	print(win.contentWindow.location, "div9");
+}
+</script>
+
+<iframe onload=altLoad() id="f" src="about:blank"></iframe>
+
+<ol>
+<li><a href="javascript:click1()">Navigate iframe to a, print current location</a><div id=div2></div>
+<li><a href="javascript:click2()">Navigate iframe to b, print current location</a><div id=div3></div>
+<li><a href="javascript:compareObjects()">Compare two location objects:</a><div id=div4></div>
+<li><a href="javascript:compareValues()">Compare two location strings:</a><div id=div5></div>
+<li><a href="javascript:printObjects()">Print out both locations (implicit toString):</a><div id=div6></div>
+<li><a href="javascript:printToString()">Print out both locations (explicit toString):</a><div id=div7></div>
+<li><a href="javascript:printHref()">Print out both locations href value:</a><div id=div8></div>
+<li><a href="javascript:printCurrent()">Print current iframe location.toString:</a><div id=div9></div>
+</ol>
+

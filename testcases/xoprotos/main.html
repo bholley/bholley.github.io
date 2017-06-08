@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script>
+var gLoadCount = 0;
+function loaded() {
+  if (++gLoadCount == 2) go();
+}
+function go() {
+  console.log("Proto observed by A for cross-origin C: " + typeof Object.getPrototypeOf(frames[0]));
+  console.log("Proto observed by B for cross-origin C: " + typeof windowProtoObservedByChild);
+  console.log("A and B observe the same proto for cross-origin-window C: " + (Object.getPrototypeOf(frames[0]) === windowProtoObservedByChild));
+  console.log("C.__proto__ === A.__proto__: " + (Object.getPrototypeOf(window) === Object.getPrototypeOf(frames[0])));
+  console.log("C.__proto__ === B.__proto__: " + (Object.getPrototypeOf(frames[1]) === Object.getPrototypeOf(frames[0])));
+}
+</script>
+<body>
+<iframe onload="loaded();" src="http://www.example.com"></iframe>
+<iframe onload="loaded();" src="iframe.html"></iframe>
+</body>
+</html>

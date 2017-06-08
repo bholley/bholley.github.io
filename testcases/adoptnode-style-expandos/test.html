@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script type="application/javascript">
+
+function checkExpando() {
+var foreign = document.getElementById('frame').contentWindow.document.getElementById('foo');
+var local = document.adoptNode(foreign);
+window.alert('foreign.style.bar is ' + foreign.style.bar);
+window.alert('local.style is ' + local.style);
+window.alert('local.style.bar is ' + local.style.bar);
+}
+
+</script>
+</head>
+<body>
+<iframe onload="checkExpando();" src="iframe.html" id="frame"></iframe>
+</body>
+</html>

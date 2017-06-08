@@ -1,0 +1,981 @@
+<!DOCTYPE html>
+
+<meta charset="utf-8">
+<title>Hacking Gecko</title>
+
+<section>
+    <!-- This is the first slide -->
+    <h1>Hacking Gecko</h1>
+    <footer>FOSDEM 2012<br/>Bobby Holley (:bholley)</footer>
+</section>
+
+<section><h2>Target Audience</h2></section>
+<section>
+    <h3>Competent C++ Developers</h3>
+    <ul class="incremental"><li>The basics are already hard!</li></ul>
+</section>
+
+<section><h2>Why?</h2></section>
+<section><h3>Gecko is !@#$-ing Important</h3></section>
+<section>
+<h3>Steer the Web</h3>
+<details>Can't do that with a frontend.</details>
+</section>
+
+<section>
+<h3>Gecko is Hard</h3>
+<details>
+<ul>
+  <li>Tons of code! ~7M lines!</li>
+  <li>History</li>
+  <li>Magic</li>
+  <li>Webkit went with KHTML</li>
+  <li>Much better in the past 5 years</li>
+</ul>
+</details>
+</section>
+
+<section><h3>But Gecko isn't Impossible</h3></section>
+
+<section><h3>Clever Strategies Keep Things Manageable</h3></section>
+
+<section><h2>Code Overview</h2></section>
+
+<section>
+<div class="incremental tagcloud">
+<span id="tc-tag35" class="cloud cloud4">dom/src/geolocation/</span>
+<span id="tc-tag37" class="cloud cloud0">netwerk/wifi/</span>
+<span id="tc-tag55" class="cloud cloud1">netwerk/base/</span>
+<span id="tc-tag67" class="cloud cloud3">layout/svg/</span>
+<span id="tc-tag52" class="cloud cloud3">toolkit/components/</span>
+<span id="tc-tag9" class="cloud cloud8">layout/html/</span>
+<span id="tc-tag47" class="cloud cloud2">layout/build/</span>
+<span id="tc-tag53" class="cloud cloud5">toolkit/library/</span>
+<span id="tc-tag72" class="cloud cloud5">xpcom/components/</span>
+<span id="tc-tag1" class="cloud cloud3">uriloader/</span>
+<span id="tc-tag70" class="cloud cloud3">content/xml/</span>
+<span id="tc-tag5" class="cloud cloud5">content/html/document/</span>
+<span id="tc-tag43" class="cloud cloud0">ipc/glue/</span>
+<span id="tc-tag28" class="cloud cloud4">dom/base/</span>
+<span id="tc-tag15" class="cloud cloud9">js/src/</span>
+<span id="tc-tag66" class="cloud cloud4">content/svg/</span>
+<span id="tc-tag3" class="cloud cloud5">parser/html/</span>
+<span id="tc-tag25" class="cloud cloud2">webshell/</span>
+<span id="tc-tag45" class="cloud cloud4">js/jsd/</span>
+<span id="tc-tag39" class="cloud cloud4">gfx/public/</span>
+<span id="tc-tag49" class="cloud cloud2">layout/printing/</span>
+<span id="tc-tag16" class="cloud cloud4">js/xpconnect/</span>
+<span id="tc-tag57" class="cloud cloud6">nsprpub/</span>
+<span id="tc-tag14" class="cloud cloud7">widget/</span>
+<span id="tc-tag41" class="cloud cloud3">gfx/qcms/</span>
+<span id="tc-tag36" class="cloud cloud3">dom/system/</span>
+<span id="tc-tag40" class="cloud cloud1">gfx/src/</span>
+<span id="tc-tag64" class="cloud cloud4">storage/</span>
+<span id="tc-tag59" class="cloud cloud6">modules/libpref/</span>
+<span id="tc-tag60" class="cloud cloud4">rdf/</span>
+<span id="tc-tag4" class="cloud cloud9">content/base/</span>
+<span id="tc-tag19" class="cloud cloud3">gfx/layers/</span>
+<span id="tc-tag27" class="cloud cloud2">dom/</span>
+<span id="tc-tag77" class="cloud cloud7">xpcom/reflect/xptcall/</span>
+<span id="tc-tag10" class="cloud cloud6">image/</span>
+<span id="tc-tag38" class="cloud cloud7">content/xbl/</span>
+<span id="tc-tag48" class="cloud cloud2">layout/forms/</span>
+<span id="tc-tag0" class="cloud cloud6">docshell/</span>
+<span id="tc-tag79" class="cloud cloud3">layout/xul/</span>
+<span id="tc-tag58" class="cloud cloud4">dom/plugins/</span>
+<span id="tc-tag12" class="cloud cloud3">gfx/thebes/</span>
+<span id="tc-tag7" class="cloud cloud10">layout/base/</span>
+<span id="tc-tag71" class="cloud cloud4">xpcom/base/</span>
+<span id="tc-tag32" class="cloud cloud1">dom/tests/</span>
+<span id="tc-tag33" class="cloud cloud5">embedding/</span>
+<span id="tc-tag18" class="cloud cloud3">layout/style/</span>
+<span id="tc-tag2" class="cloud cloud9">netwerk/</span>
+<span id="tc-tag6" class="cloud cloud6">content/html/content/</span>
+<span id="tc-tag21" class="cloud cloud2">build/</span>
+<span id="tc-tag29" class="cloud cloud1">dom/interfaces/</span>
+<span id="tc-tag30" class="cloud cloud0">dom/public/</span>
+<span id="tc-tag80" class="cloud cloud3">content/xslt/</span>
+<span id="tc-tag74" class="cloud cloud3">xpcom/threads/</span>
+<span id="tc-tag44" class="cloud cloud6">ipc/ipdl/</span>
+<span id="tc-tag8" class="cloud cloud7">layout/generic/</span>
+<span id="tc-tag23" class="cloud cloud2">parser/htmlparser/</span>
+<span id="tc-tag20" class="cloud cloud7">accessible/</span>
+<span id="tc-tag11" class="cloud cloud6">editor/</span>
+<span id="tc-tag65" class="cloud cloud1">xpcom/string/</span>
+<span id="tc-tag68" class="cloud cloud4">view/</span>
+<span id="tc-tag31" class="cloud cloud5">dom/src/</span>
+<span id="tc-tag17" class="cloud cloud3">caps/</span>
+<span id="tc-tag61" class="cloud cloud5">modules/libreg/</span>
+<span id="tc-tag13" class="cloud cloud3">gfx/cairo/</span>
+<span id="tc-tag63" class="cloud cloud4">security/nss/</span>
+<span id="tc-tag46" class="cloud cloud6">js/src/ctypes/</span>
+<span id="tc-tag54" class="cloud cloud1">layout/mathml/</span>
+<span id="tc-tag26" class="cloud cloud7">content/events/</span>
+<span id="tc-tag75" class="cloud cloud1">xpcom/typelib/</span>
+<span id="tc-tag76" class="cloud cloud6">xpinstall/</span>
+<span id="tc-tag24" class="cloud cloud0">netwerk/cookie/</span>
+<span id="tc-tag42" class="cloud cloud4">gfx/2d/</span>
+<span id="tc-tag73" class="cloud cloud6">xpcom/glue/</span>
+<span id="tc-tag50" class="cloud cloud2">layout/tables/</span>
+<span id="tc-tag62" class="cloud cloud6">dbm/</span>
+<span id="tc-tag51" class="cloud cloud1">modules/libjar/</span>
+<span id="tc-tag69" class="cloud cloud0">content/xbl/</span>
+<span id="tc-tag78" class="cloud cloud3">content/xul/</span>
+<span id="tc-tag22" class="cloud cloud5">config/</span>
+<span id="tc-tag34" class="cloud cloud4">extensions/typeaheadfind/</span>
+<span id="tc-tag56" class="cloud cloud1">netwerk/cache/</span>
+</div>
+</section>
+
+<section>
+<h3 class="centertext">It's a trap!</h3>
+<img src="ackbar.jpg">
+</section>
+
+<section><h3>Avoid the Total Perspective Vortex</h3></section>
+
+<section><h3>Focus on the Module</h3></section>
+<section><h3>Focus on the Feature</h3></section>
+<section><h3>Focus on the Diff</h3></section>
+
+<section><h3>Ignore the Fear of Unintended Consequences</h3></section>
+
+<section><h3>We Do Code Review</h3></section>
+<section><h3>We Have Tests</h3></section>
+
+<section>
+<h3>Tests Are Awesome!</h3>
+<details>
+  <ul>
+    <li>Give you confidence</li>
+    <li>Prevent other people from breaking your code</li>
+    <li>Consider writing the test first</li>
+  </ul>
+</details>
+</section>
+
+<section><h3>Plugging In</h3></section>
+
+<section><h3>We Have Docs</h3></section>
+<section><h3>We Have MXR</h3></section>
+
+<section><h3>Super Secret Weapon: IRC</h3></section>
+
+<section><h3>Lots of channels - when In Doubt, Ask on #developers</h3></section>
+<section><h3>But Sometimes, It's Nice To Ping Someone</h3></section>
+
+<section>
+<h3>The Gods: Endless Knowledge, ~0 Time</h3>
+<ul class="incremental">
+  <li>bz (Boris Zbarsky)</li>
+  <li>bsmedberg (Benjamin Smedberg)</li>
+  <li>roc (Robert O'Callahan</li>
+  <li>dbaron (David Baron)</li>
+  <li>mrbkap (Blake Kaplan)</li>
+  <li><a href="http://www.mozilla.org/hacking/reviewers.html">(and others)</a></li>
+</ul>
+</section>
+
+<section><h2>Friendly People With More Time</h2></section>
+<section><h3 class="centertext">khuey (Kyle Huey)</h3><img class="profile" src="people/khuey.png" /></section>
+<section><h3 class="centertext">ehsan (Ehsan Akhgari)</h3><img class="profile" src="people/ehsan.jpg" /></section>
+<section><h3 class="centertext">bholley (Bobby Holley)</h3><img class="profile" src="people/bholley.jpg" /></section>
+<section><h3 class="centertext">jdm (Josh Matthews)</h3><img class="profile" src="people/jdm.jpg" /></section>
+<section><h3 class="centertext">Ms2ger (???)</h3><img class="profile" src="people/ms2ger.jpg" /></section>
+
+<section>
+<h3><a href="https://lists.mozilla.org/listinfo/dev-platform">dev-platform</a></h3>
+<details>Avoid it unless it really warrants discussion by the entire platform community</details>
+</section>
+
+<section><h3>Questions So Far?</h3></section>
+
+<section><h2>Core Concepts</h2></section>
+
+<section>
+<h3>Gecko as Rendering Engine</h3>
+<details>
+<ul>
+  <li>Same Rendering Engine For Everything</li>
+  <li>Content vs Chrome</li>
+  <li>XUL CSS JS...and XBL</li>
+</ul>
+</details>
+</section>
+
+<section><h3>XPCOM</h3></section>
+
+<section>
+<h3>Interfaces and IDL</h3>
+<details>
+<ul>
+  <li>Interfaces are good</li>
+  <li>Why is IDL Needed?</li>
+  <li>Mechanics - Header generation and typelibs</li>
+  <li>nsISupports</li>
+</ul>
+</details>
+</section>
+
+<section>
+<h3>Components and Services</h3>
+<details>
+<ul>
+  <li>Abstraction</li>
+  <li>Cross-Module Linkage</li>
+  <li>GOOP</li>
+  <li>Less necessary over time</li>
+  <li>deCOM</li>
+</ul>
+</details>
+</section>
+
+<section>
+<h3>The JS Engine</h3>
+<details>
+<ul>
+  <li>Isolated, few deps</li>
+  <li>DOM reflection via XPConnect</li>
+</ul>
+</details>
+</section>
+
+<section>
+<h3>Memory Management</h3>
+<details>
+<ul>
+  <li>AddRef/Release</li>
+  <li>JS GC</li>
+  <li>CC</li>
+  <li>nsCOMPtr and nsRefPtr</li>
+</ul>
+</details>
+</section>
+
+<section><h3>Questions So Far?</h3></section>
+
+<section><h2>Development Mechanics</h2></section>
+
+<section><h3>Disclaimer: Not Covering IDEs</h3></section>
+
+<section>
+<h3>Get the Build Prerequisites</h3>
+<ul class="incremental">
+  <li><a href="https://developer.mozilla.org/En/Developer_Guide/Build_Instructions">MDN Has the dirt</a></li>
+</ul>
+</section>
+
+<section>
+<h3>Get the Source</h3>
+<ul>
+  <li><span class="shell">hg clone http://hg.mozilla.org/mozilla-central/</span></li>
+  <li><span class="shell">git clone git://github.com/doublec/mozilla-central.git</span></li>
+</ul>
+</section>
+
+<section>
+<h3>Make a .mozconfig</h3>
+<ul>
+  <li>Object Directories</li>
+  <li><a href="https://developer.mozilla.org/en/Configuring_Build_Options">See MDN</a></li>
+  <li><span class="shell">mk_add_options MOZ_MAKE_FLAGS="-j4 -s"</span></li>
+</ul>
+</section>
+
+<section>
+<h3>Build</h3>
+<ul>
+  <li>make -f client.mk build</li>
+</ul>
+</section>
+
+<section>
+<h3>Find</h3>
+<ul>
+  <li>Linux/Windows: objdir/dist/bin</li>
+  <li>Mac OSX: objdir/dist/AppName.app/Contents/MacOS</li>
+</ul>
+</section>
+
+<section>
+<h3>Run</h3>
+<ul>
+  <li>./firefox</li>
+  <li>-ProfileManager</li>
+  <li>-P</li>
+  <li>-no-remote</li>
+</ul>
+</section>
+
+<section>
+<h3>Rebuilding</h3>
+<ul class="incremental">
+  <li>Slow: make in objdir</li>
+  <li>Slower: make -f client.mk build</li>
+  <li>Fast: make in object subdirectory, then make in...
+    <ul>
+    <li>layout/build (sometimes)</li>
+    <li>toolkit/library</li>
+    </ul>
+  </li>
+</ul>
+</section>
+
+<section>
+<h3>Multiple Working Directories</h3>
+<ul class="incremental">
+  <li>multiple hg clones</li>
+  <li>git-new-workdir</li>
+</ul>
+</section>
+
+<section>
+<h3>Managing Changes</h3>
+<ul>
+  <li><a href="https://developer.mozilla.org/en/Mercurial_Queues">Mercurial Patch Queues</a></li>
+  <li>Git Branches</li>
+</ul>
+</section>
+
+<section>
+<h3>Submitting Changes</h3>
+<ol class="incremental">
+  <li>File or Find Bug</li>
+  <li>Attach Patch</li>
+  <li>Attach Tests</li>
+  <li>Flag for Review</li>
+  <li>Address Review Comments, and Repeat</li>
+  <li>Flag checkin-needed</li>
+</ol>
+</section>
+
+<section>
+<h3>Code Review</h3>
+<ul class="incremental">
+  <li>Expect r-</li>
+  <li>Follow local style</li>
+  <li>Seek our less busy reviewers</li>
+  <li>Whine after ~1 week, depending on the reviewer</li>
+  <li>Make patches bite-sized</li>
+</ul>
+</section>
+
+<section><h2>Running Tests</h2></section>
+
+<section>
+<h3>Types of Tests</h3>
+<ul>
+  <li>Reftests</li>
+  <li>Crashtests</li>
+  <li>XPCShell Tests</li>
+  <li>Mochitests</li>
+  <li>JS tests</li>
+  <li>Compiled code tests :-(</li>
+</ul>
+</section>
+
+<section>
+<h3>Running Reftests and Crashtests</h3>
+<ul class="incremental">
+  <li><span class="shell">/path/to/objdir $ make reftest</span></li>
+  <li><span class="shell">/path/to/objdir $ TEST_PATH=image/test/reftest/reftest.list make reftest</span></li>
+</ul>
+</section>
+
+<section>
+<h3>Running XPCShell Tests</h3>
+<ul>
+  <li><span class="shell">/path/to/objdir $ make xpcshell-tests</span></li>
+  <li><span class="shell">/path/to/objdir $ make -C image/test/ xpcshell-tests</span></li>
+  <li><span class="shell">/path/to/objdir $ SOLO_FILE="test_imgtools.js" make -C image/test/ check-one</span></li>
+  <li><span class="shell">/path/to/objdir $ SOLO_FILE="test_imgtools.js" make -C image/test/ check-interactive</span></li>
+</ul>
+</section>
+
+<section>
+<h3>Running Mochitests</h3>
+<ul>
+  <li><span class="shell">/path/to/objdir $ make mochitest-plain</span></li>
+  <li><span class="shell">/path/to/objdir $ make mochitest-chrome</span></li>
+  <li><span class="shell">/path/to/objdir $ make mochitest-browser-chrome</span></li>
+  <li><span class="shell">/path/to/objdir $ TEST_PATH=image/test/mochitest make mochitest-plain</span></li>
+  <li><span class="shell">/path/to/objdir $ TEST_PATH=image/test/mochitest/test_bug399925.html make mochitest-plain</span></li>
+</ul>
+</section>
+
+<section>
+<h3>Don't Run Them All Yourself!</h3>
+<ul class="incremental">
+  <li>Run the relevant ones, then <a href="https://wiki.mozilla.org/ReleaseEngineering/TryServer">push to try</a></li>
+</ul>
+</section>
+
+<section>
+    <h2>Getting Involved</h2>
+    <details>good-first-bug, but really, just ping someone</details>
+</section>
+
+<section>
+    <h2>Questions</h2>
+</section>
+
+<!-- Your Style -->
+<!-- Define the style of your presentation -->
+
+<!-- Maybe a font from http://www.google.com/webfonts ? -->
+<link href='http://fonts.googleapis.com/css?family=Ubuntu:700' rel='stylesheet' type='text/css'>
+<link href='http://fonts.googleapis.com/css?family=Terminal+Dosis' rel='stylesheet' type='text/css'>
+
+<style>
+
+  img.profile {
+    height: 300px;
+    margin: 50px 10px 10px 10px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  ol {
+    list-style-type: decimal;
+    list-style-position: inside;
+  }
+
+  /* Tag cloud stuff. */
+  span.cloud { margin: 3px 3px 0px 0px; visibility: hidden;}
+  span.cloud[cloud-visible] {visibility: visible; }
+  span.cloud0 { font-size: 0.3em; }
+  span.cloud1 { font-size: 0.4em; }
+  span.cloud2 { font-size: 0.5em; }
+  span.cloud3 { font-size: 0.6em; }
+  span.cloud4 { font-size: 0.7em; }
+  span.cloud5 { font-size: 0.8em; }
+  span.cloud6 { font-size: 0.9em; }
+  span.cloud7 { font-size: 1.0em; }
+  span.cloud8 { font-size: 1.2em; }
+  span.cloud9 { font-size: 1.4em; }
+  span.cloud10 { font-size: 1.6em; }
+  .tagcloud { text-align: center; }
+
+  a {color: #ffffff;}
+  html { background-color: black; color: white; }
+  body { background: url('hg-bg.jpg'); background-size: 100%; }
+  /* A section is a slide. It's size is 800x600, and this will never change */
+  section {
+      /* The font from Google */
+      font-family: 'Ubuntu', sans-serif;
+      font-size: 30px;
+  }
+  h1, h2 {
+    margin-top: 200px;
+    text-align: center;
+    font-size: 80px;
+  }
+  h3 {
+    margin: 100px 0 50px 100px;
+    font-size: 40px;
+  }
+
+  .centertext {
+    text-align: center;
+    margin: 100px 0px 50px 0px;
+  }
+  .shell {
+    font-family: 'Terminal Dosis', sans-serif;
+    font-size: 20px;
+  }
+
+  ul {
+      margin: 50px 200px;
+  }
+
+  q {
+    display: inline-block;
+    width: 700px;
+    height: 600px;
+    background-color: black;
+    color: white;
+    font-size: 60px;
+    padding: 50px;
+  }
+
+  img {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  video {
+    width: 800px;
+    height: 600px;
+    position: absolute;
+    top: 0;
+    background-color: black;
+    z-index: -1;
+  }
+
+  footer {
+    position: absolute;
+    bottom: 10px;
+    left: 20px;
+  }
+
+  /* Transition effect */
+  /* Feel free to change the transition effect for original
+     animations. See here:
+     https://developer.mozilla.org/en/CSS/CSS_transitions
+     How to use CSS3 Transitions: */
+  section {
+      -moz-transition: left 400ms linear 0s;
+      -webkit-transition: left 400ms linear 0s;
+      -ms-transition: left 400ms linear 0s;
+      transition: left 400ms linear 0s;
+  }
+
+  /* Before */
+  section { left: -150%; }
+  /* Now */
+  section[aria-selected] { left: 0; }
+  /* After */
+  section[aria-selected] ~ section { left: +150%; }
+
+  /* Incremental elements */
+
+  /* By default, visible */
+  .incremental > * { opacity: 1; }
+
+  /* The current item */
+  .incremental > *[aria-selected] { color: #ffff44; opacity: 1; }
+
+  /* The items to-be-selected */
+  .incremental > *[aria-selected] ~ * { opacity: 0.2; }
+
+</style>
+
+<!-- {{{{ dzslides core
+#
+#
+#     __  __  __       .  __   ___  __
+#    |  \  / /__` |    | |  \ |__  /__`
+#    |__/ /_ .__/ |___ | |__/ |___ .__/ core :€
+#
+#
+# The following block of code is not supposed to be edited.
+# But if you want to change the behavior of these slides,
+# feel free to hack it!
+#
+-->
+
+<!-- Default Style -->
+<style>
+  * { margin: 0; padding: 0; }
+  details { display: none; }
+  body {
+    width: 800px; height: 600px;
+    margin-left: -400px; margin-top: -300px;
+    position: absolute; top: 50%; left: 50%;
+    overflow: hidden;
+  }
+  section {
+    position: absolute;
+    pointer-events: none;
+    width: 100%; height: 100%;
+  }
+  section[aria-selected] { pointer-events: auto; }
+  html { overflow: hidden; }
+  body { display: none; }
+  body.loaded { display: block; }
+  .incremental {visibility: hidden; }
+  .incremental[active] {visibility: visible; }
+</style>
+
+<script>
+  var Dz = {
+    remoteWindows: [],
+    idx: -1,
+    step: 0,
+    slides: null,
+    params: {
+      autoplay: "1"
+    }
+  };
+
+  Dz.init = function() {
+    document.body.className = "loaded";
+    this.slides = $$("body > section");
+    this.setupParams();
+    this.onhashchange();
+    this.setupTouchEvents();
+    this.onresize();
+  }
+  
+  Dz.setupParams = function() {
+    var p = window.location.search.substr(1).split('&');
+    p.forEach(function(e, i, a) {
+      var keyVal = e.split('=');
+      Dz.params[keyVal[0]] = decodeURIComponent(keyVal[1]);
+    });
+  }
+
+  Dz.onkeydown = function(aEvent) {
+    // Don't intercept keyboard shortcuts
+    if (aEvent.altKey
+      || aEvent.ctrlKey
+      || aEvent.metaKey
+      || aEvent.shiftKey) {
+      return;
+    }
+    if ( aEvent.keyCode == 37 // left arrow
+      || aEvent.keyCode == 38 // up arrow
+      || aEvent.keyCode == 33 // page up
+    ) {
+      aEvent.preventDefault();
+      this.back();
+    }
+    if ( aEvent.keyCode == 39 // right arrow
+      || aEvent.keyCode == 40 // down arrow
+      || aEvent.keyCode == 34 // page down
+    ) {
+      aEvent.preventDefault();
+      this.forward();
+    }
+    if (aEvent.keyCode == 35) { // end
+      aEvent.preventDefault();
+      this.goEnd();
+    }
+    if (aEvent.keyCode == 36) { // home
+      aEvent.preventDefault();
+      this.goStart();
+    }
+    if (aEvent.keyCode == 32) { // space
+      aEvent.preventDefault();
+      this.toggleContent();
+    }
+  }
+
+  /* Touch Events */
+
+  Dz.setupTouchEvents = function() {
+    var orgX, newX;
+    var tracking = false;
+
+    var db = document.body;
+    db.addEventListener("touchstart", start.bind(this), false);
+    db.addEventListener("touchmove", move.bind(this), false);
+
+    function start(aEvent) {
+      aEvent.preventDefault();
+      tracking = true;
+      orgX = aEvent.changedTouches[0].pageX;
+    }
+
+    function move(aEvent) {
+      if (!tracking) return;
+      newX = aEvent.changedTouches[0].pageX;
+      if (orgX - newX > 100) {
+        tracking = false;
+        this.forward();
+      } else {
+        if (orgX - newX < -100) {
+          tracking = false;
+          this.back();
+        }
+      }
+    }
+  }
+
+  /* Adapt the size of the slides to the window */
+
+  Dz.onresize = function() {
+    var db = document.body;
+    var sx = db.clientWidth / window.innerWidth;
+    var sy = db.clientHeight / window.innerHeight;
+    var transform = "scale(" + (1/Math.max(sx, sy)) + ")";
+
+    db.style.MozTransform = transform;
+    db.style.WebkitTransform = transform;
+    db.style.OTransform = transform;
+    db.style.msTransform = transform;
+    db.style.transform = transform;
+  }
+
+
+  Dz.getDetails = function(aIdx) {
+    var s = $("section:nth-of-type(" + aIdx + ")");
+    var d = s.$("details");
+    return d ? d.innerHTML : "";
+  }
+
+  Dz.onmessage = function(aEvent) {
+    var argv = aEvent.data.split(" "), argc = argv.length;
+    argv.forEach(function(e, i, a) { a[i] = decodeURIComponent(e) });
+    var win = aEvent.source;
+    if (argv[0] === "REGISTER" && argc === 1) {
+      this.remoteWindows.push(win);
+      this.postMsg(win, "REGISTERED", document.title, this.slides.length);
+      this.postMsg(win, "CURSOR", this.idx + "." + this.step);
+      return;
+    }
+    if (argv[0] === "BACK" && argc === 1)
+      this.back();
+    if (argv[0] === "FORWARD" && argc === 1)
+      this.forward();
+    if (argv[0] === "START" && argc === 1)
+      this.goStart();
+    if (argv[0] === "END" && argc === 1)
+      this.goEnd();
+    if (argv[0] === "TOGGLE_CONTENT" && argc === 1)
+      this.toggleContent();
+    if (argv[0] === "SET_CURSOR" && argc === 2)
+      window.location.hash = "#" + argv[1];
+    if (argv[0] === "GET_CURSOR" && argc === 1)
+      this.postMsg(win, "CURSOR", this.idx + "." + this.step);
+    if (argv[0] === "GET_NOTES" && argc === 1)
+      this.postMsg(win, "NOTES", this.getDetails(this.idx));
+  }
+
+  Dz.toggleContent = function() {
+    // If a Video is present in this new slide, play it.
+    // If a Video is present in the previous slide, stop it.
+    var s = $("section[aria-selected]");
+    if (s) {
+      var video = s.$("video");
+      if (video) {
+        if (video.ended || video.paused) {
+          video.play();
+        } else {
+          video.pause();
+        }
+      }
+    }
+  }
+
+  Dz.setCursor = function(aIdx, aStep) {
+    // If the user change the slide number in the URL bar, jump
+    // to this slide.
+    aStep = (aStep != 0 && typeof aStep !== "undefined") ? "." + aStep : ".0";
+    window.location.hash = "#" + aIdx + aStep;
+  }
+
+  Dz.onhashchange = function() {
+    var cursor = window.location.hash.split("#"),
+        newidx = 1,
+        newstep = 0;
+    if (cursor.length == 2) {
+      newidx = ~~cursor[1].split(".")[0];
+      newstep = ~~cursor[1].split(".")[1];
+      if (newstep > Dz.slides[newidx - 1].$$('.incremental > *').length) {
+        newstep = 0;
+        newidx++;
+      }
+    }
+    if (newidx != this.idx) {
+      this.setSlide(newidx);
+    }
+    if (newstep != this.step) {
+      this.setIncremental(newstep);
+    }
+    for (var i = 0; i < this.remoteWindows.length; i++) {
+      this.postMsg(this.remoteWindows[i], "CURSOR", this.idx + "." + this.step);
+    }
+  }
+
+  Dz.back = function() {
+    if (this.idx == 1 && this.step == 0) {
+      return;
+    }
+    if (this.step == 0) {
+      var isCloud = this.slides[this.idx - 2].$$('.tagcloud > *').length != 0;
+      this.setCursor(this.idx - 1,
+                     isCloud ? 0 : this.slides[this.idx - 2].$$('.incremental > *').length);
+    } else {
+      this.setCursor(this.idx, this.step - 1);
+    }
+  }
+
+  Dz.forward = function() {
+    if (this.idx >= this.slides.length &&
+        this.step >= this.slides[this.idx - 1].$$('.incremental > *').length) {
+        return;
+    }
+    if (this.step >= this.slides[this.idx - 1].$$('.incremental > *').length) {
+      // Clean up our incremental cloud display attributes.
+      this.slides[this.idx - 1].$$('.tagcloud > *').forEach(function(aNode) {aNode.removeAttribute('cloud-visible');});
+      this.setCursor(this.idx + 1, 0);
+    } else {
+      this.setCursor(this.idx, this.step + 1);
+    }
+  }
+
+  Dz.goStart = function() {
+    this.setCursor(1, 0);
+  }
+
+  Dz.goEnd = function() {
+    var lastIdx = this.slides.length;
+    var lastStep = this.slides[lastIdx - 1].$$('.incremental > *').length;
+    this.setCursor(lastIdx, lastStep);
+  }
+
+  Dz.setSlide = function(aIdx) {
+    this.idx = aIdx;
+    var old = $("section[aria-selected]");
+    var next = $("section:nth-of-type("+ this.idx +")");
+    if (old) {
+      old.removeAttribute("aria-selected");
+      var video = old.$("video");
+      if (video) {
+        video.pause();
+      }
+    }
+    if (next) {
+      next.setAttribute("aria-selected", "true");
+      var video = next.$("video");
+      if (video && !!+this.params.autoplay) {
+        video.play();
+      }
+    } else {
+      // That should not happen
+      this.idx = -1;
+      // console.warn("Slide doesn't exist.");
+    }
+  }
+
+  Dz.setIncremental = function(aStep) {
+    this.step = aStep;
+    var old = this.slides[this.idx - 1].$('.incremental > *[aria-selected]');
+    if (old) {
+      old.removeAttribute('aria-selected');
+    }
+    var incrementals = this.slides[this.idx - 1].$$('.incremental');
+    if (this.step <= 0) {
+      incrementals.forEach(function(aNode) {
+        aNode.removeAttribute('active');
+      });
+      return;
+    }
+
+    var cloudNodes  = this.slides[this.idx - 1].$$('.tagcloud > *');
+    if (cloudNodes.length && this.step) {
+
+      // Convert the nodelist to an array.
+      window.cloudList = [];
+      for (var i = 0; i < cloudNodes.length; ++i)
+        cloudList.push(cloudNodes[i]);
+
+      // Sort the array.
+      var sortFn = function(a, b) {
+        var aindex = a.id.replace('tc-tag', '');
+        var bindex = b.id.replace('tc-tag', '');
+        return aindex - bindex;
+      };
+      cloudList.sort(sortFn);
+
+      // Make sure the parent is active, otherwise it won't show up.
+      cloudList[0].parentNode.setAttribute('active', true);
+
+      // Iterate, setting the attributes appropriately.
+      for (var i = 0; i < cloudList.length; ++i) {
+        if (i < this.step)
+          cloudList[i].setAttribute('cloud-visible', true);
+        else
+          cloudList[i].removeAttribute('cloud-visible');
+      }
+
+      // Cute trick: When we get to a given number of tags, start accelerating
+      // forward automatically.
+      var startIndex = 17;
+      var initialDelay = 1500;
+      var interval = 8;
+      var pos = this.step - startIndex;
+      if (pos > 0) {
+        var frac = (interval - pos) / (1.0*interval);
+        var timeout;
+        if (frac > 0)
+          timeout = Math.round(initialDelay * frac);
+        else
+          timeout = 40;
+        if (!Dz._cuteTimeout && this.step < cloudList.length)
+          Dz._cuteTimeout = setTimeout('Dz.forward(); Dz._cuteTimeout = null;', timeout);
+      }
+
+      return cloudList[this.step - 1];
+    }
+
+    var next = this.slides[this.idx - 1].$$('.incremental > *')[this.step - 1];
+    if (next) {
+      next.setAttribute('aria-selected', true);
+      next.parentNode.setAttribute('active', true);
+      var found = false;
+      incrementals.forEach(function(aNode) {
+        if (aNode != next.parentNode)
+          if (found)
+            aNode.removeAttribute('active');
+          else
+            aNode.setAttribute('active', true);
+        else
+          found = true;
+      });
+    } else {
+      setCursor(this.idx, 0);
+    }
+    return next;
+  }
+  
+  Dz.postMsg = function(aWin, aMsg) { // [arg0, [arg1...]]
+    aMsg = [aMsg];
+    for (var i = 2; i < arguments.length; i++)
+      aMsg.push(encodeURIComponent(arguments[i]));
+    aWin.postMessage(aMsg.join(" "), "*");
+  }
+
+  window.onload = Dz.init.bind(Dz);
+  window.onkeydown = Dz.onkeydown.bind(Dz);
+  window.onresize = Dz.onresize.bind(Dz);
+  window.onhashchange = Dz.onhashchange.bind(Dz);
+  window.onmessage = Dz.onmessage.bind(Dz);
+</script>
+
+
+<script> // Helpers
+  if (!Function.prototype.bind) {
+    Function.prototype.bind = function (oThis) {
+
+      // closest thing possible to the ECMAScript 5 internal IsCallable
+      // function 
+      if (typeof this !== "function")
+      throw new TypeError(
+        "Function.prototype.bind - what is trying to be fBound is not callable"
+      );
+
+      var aArgs = Array.prototype.slice.call(arguments, 1),
+          fToBind = this,
+          fNOP = function () {},
+          fBound = function () {
+            return fToBind.apply( this instanceof fNOP ? this : oThis || window,
+                   aArgs.concat(Array.prototype.slice.call(arguments)));
+          };
+
+      fNOP.prototype = this.prototype;
+      fBound.prototype = new fNOP();
+
+      return fBound;
+    };
+  }
+
+  var $ = (HTMLElement.prototype.$ = function(aQuery) {
+    return this.querySelector(aQuery);
+  }).bind(document);
+
+  var $$ = (HTMLElement.prototype.$$ = function(aQuery) {
+    return this.querySelectorAll(aQuery);
+  }).bind(document);
+
+  NodeList.prototype.forEach = function(fun) {
+    if (typeof fun !== "function") throw new TypeError();
+    for (var i = 0; i < this.length; i++) {
+      fun.call(this, this[i]);
+    }
+  }
+
+</script>
+<!-- vim: set fdm=marker: }}} -->

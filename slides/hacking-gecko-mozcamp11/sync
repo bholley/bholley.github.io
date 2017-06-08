@@ -1,0 +1,1 @@
+rsync -e "ssh -o KeepAlive=yes" -av * people.mozilla.com:public_html/hacking-gecko --delete

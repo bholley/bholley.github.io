@@ -1,0 +1,20 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Circle SVG</title>
+        <script type="text/javascript">
+            window.onload = function()
+            {
+                document.domain = window.location.host;
+                var svgObject = document.getElementById("svg-object").contentDocument;
+                console.log(svgObject);
+                var svgEmbed = document.getElementById('svg-embed').getSVGDocument();
+                console.log(svgEmbed);
+            }
+        </script>
+    </head>
+    <body>
+        <object id="svg-object" data="circle.svg"></object>
+        <embed id="svg-embed" src="circle.svg" width="300" height="150" type="image/svg+xml" />
+    </body>
+</html>

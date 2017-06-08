@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script>
+function go() {
+  var iwin = document.getElementById('ifr').contentWindow;
+  var arr = [];
+  for (var i in iwin)
+    arr.push(i);
+  alert(arr.length);
+}
+</script>
+</head>
+<body>
+<iframe id="ifr" src="http://www.example.com" onload="go();"></iframe>
+</body>
+<html>

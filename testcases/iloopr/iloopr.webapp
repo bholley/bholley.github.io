@@ -1,0 +1,10 @@
+{
+  "name": "iLoopr",
+  "description": "Infinite Loop - in an App!",
+  "launch_path": "/~bholley/testcases/iloopr/index.html",
+  "developer": {
+    "name": "Bobby Holley",
+    "url": "http://your-homepage-here.org"
+  },
+  "default_locale": "en"
+}

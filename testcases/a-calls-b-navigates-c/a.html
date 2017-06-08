@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script>
+  function go() {
+    var win = document.getElementById('ifr').contentWindow;
+    win.innerLoad();
+  }
+</script>
+</head>
+<body>
+<iframe id="ifr" onload="go()" src="b.html"></iframe>
+</body>
+</html>

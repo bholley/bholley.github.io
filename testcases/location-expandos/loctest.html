@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script>
+function go() {
+  ifr = document.getElementById('ifr');
+  ifr.onload = go2;
+  gLoc1 = ifr.contentWindow.location;
+  gLoc1.expando = '2';
+  ifr.contentWindow.location = 'loctest-iframe2.html';
+}
+
+function go2() {
+  gLoc2 = ifr.contentWindow.location;
+  alert(gLoc1 === gLoc2);
+}
+
+</script>
+</head>
+<body>
+<iframe id="ifr" onload="go();" src="loctest-iframe.html"></iframe>
+</body>
+</html>

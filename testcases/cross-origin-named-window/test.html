@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script>
+function go() {
+  var win = document.getElementById('ifr').contentWindow;
+  var named = win['myframe'];
+  var accessible = named && (named.frames == named);
+  var enumerable = 'myframe' in win;
+  var keysable = (Object.keys(win).indexOf('myframe') != -1);
+  var gopnable = (Object.getOwnPropertyNames(win).indexOf('myframe') != -1);
+  alert("Cross-Origin Named Frame Access Works: " + accessible + ". Enumerable: "  + enumerable + ", Object.keys-able: " + keysable + ", getOwnPropertyNames-able: " + gopnable);
+}
+</script>
+</head>
+<body>
+<iframe id="ifr" onload="setTimeout(go, 1000);" src="http://li160-177.members.linode.com/cross-origin-named-window/a.html">
+</body>
+</html>
