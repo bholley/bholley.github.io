@@ -1,0 +1,15 @@
+<!doctype html>
+<html>
+<head>
+<script>
+function doDraw() {
+  var ctx = document.getElementById('canvas').getContext('2d');
+  ctx.fillStyle = "#FF5500";
+  ctx.fillRect(0,0,333,444);
+}
+</script>
+</head>
+<body onload="doDraw();">
+<canvas id="canvas" width="333" height="444"></canvas>
+</body>
+</html>
