@@ -150,8 +150,8 @@ body {
 }
 
 #contentpane {
-  font-family: 'Alegreya', serif;
-  font-size: 14pt;
+  font-family: 'Open Sans', sans-serif;
+  font-size: 12pt;
   background: rgba(240,240,240, 0.95); /* Mimic the effective color of the translucent bar at the top */
   position: relative; /* Use an explicit non-static position so that the absolutely-positioned div inside
                          will be positioned relative to us. */
